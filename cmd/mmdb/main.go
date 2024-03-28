@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 
+	"github.com/btwiuse/mmdb"
 	"github.com/btwiuse/tags"
 	"github.com/maxmind/mmdbinspect/pkg/mmdbinspect"
 )
@@ -25,13 +26,13 @@ will be assumed for ipv6 addresses.
 }
 
 func main() {
-	var mmdb tags.CommaSeparatedStrings
-	DefaultDBs, err := EnsureLatestDBFiles()
+	var dbs tags.CommaSeparatedStrings
+	DefaultDBs, err := mmdb.EnsureLatestDBFiles()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	flag.Var(&mmdb, "db", "Path to an mmdb file. You may pass this arg more than once.")
+	flag.Var(&dbs, "db", "Path to an mmdb file. You may pass this arg more than once.")
 	includeAliasedNetworks := flag.Bool(
 		"include-aliased-networks", false,
 		"Include aliased networks (e.g. 6to4, Teredo). This option may cause IPv4 networks to be listed more than once via aliases.", //nolint: lll
@@ -49,11 +50,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	if len(mmdb) == 0 {
-		mmdb = DefaultDBs
+	if len(dbs) == 0 {
+		dbs = DefaultDBs
 	}
 
-	records, err := mmdbinspect.AggregatedRecords(network, mmdb, *includeAliasedNetworks)
+	records, err := mmdbinspect.AggregatedRecords(network, dbs, *includeAliasedNetworks)
 	if err != nil {
 		log.Fatal(err)
 	}

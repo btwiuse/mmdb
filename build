@@ -5,5 +5,5 @@ cd "$BASEDIR"
 
 [[ -f mmdb ]] || {
 	go mod tidy
-	go build .
+	go build ./cmd/mmdb
 }

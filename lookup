@@ -1,9 +1,1 @@
-#!/usr/bin/env bash
-
-set -u
-
-BASEDIR=$(dirname $(realpath $0))
-cd "$BASEDIR"
-
-./mmdb \
-	${@}
+mmdb
