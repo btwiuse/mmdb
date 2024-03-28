@@ -3,7 +3,8 @@
 BASEDIR=$(dirname $(realpath $0))
 cd "$BASEDIR"
 
-TAG=2024.03.13
+TAG="$(curl -sI https://github.com/P3TERX/GeoLite.mmdb/releases/latest | grep location: | cut -d / -f 8 | tr -d '\r' )"
+echo $TAG
 
 # download mmdbinspect
 export GOBIN=$PWD
@@ -15,6 +16,6 @@ pushd $TAG
 for file in GeoLite2-{ASN,City,Country}.mmdb; do
 	ln -svf $TAG/$file ../$file
 	[[ -f $file ]] && continue
-	wget https://github.com/P3TERX/GeoLite.mmdb/releases/download/$TAG/$file
+	curl -#L https://github.com/P3TERX/GeoLite.mmdb/releases/download/$TAG/$file > $file
 done
 popd
