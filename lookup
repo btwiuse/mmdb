@@ -6,7 +6,7 @@ BASEDIR=$(dirname $(realpath $0))
 cd "$BASEDIR"
 
 ./mmdbinspect \
-	-db GeoLite2-ASN.mmdb \
-	-db GeoLite2-City.mmdb \
-	-db GeoLite2-Country.mmdb \
+	-db ~/.mmdb/GeoLite2-ASN.mmdb \
+	-db ~/.mmdb/GeoLite2-City.mmdb \
+	-db ~/.mmdb/GeoLite2-Country.mmdb \
 	${1}
