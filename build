@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-set -u
-
 BASEDIR=$(dirname $(realpath $0))
 cd "$BASEDIR"
 
-./mmdb \
-	${@}
+[[ -f mmdb ]] || {
+	go mod tidy
+	go build .
+}

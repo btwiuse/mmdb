@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path"
 
 	"github.com/btwiuse/tags"
 	"github.com/maxmind/mmdbinspect/pkg/mmdbinspect"
@@ -25,6 +26,10 @@ will be assumed for ipv6 addresses.
 
 func main() {
 	var mmdb tags.CommaSeparatedStrings
+	DefaultDBs, err := EnsureLatestDBFiles()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	flag.Var(&mmdb, "db", "Path to an mmdb file. You may pass this arg more than once.")
 	includeAliasedNetworks := flag.Bool(
@@ -45,14 +50,18 @@ func main() {
 	}
 
 	if len(mmdb) == 0 {
-		fmt.Println("You must provide a path to at least one .mmdb file")
-		usage()
-		os.Exit(1)
+		mmdb = DefaultDBs
 	}
 
 	records, err := mmdbinspect.AggregatedRecords(network, mmdb, *includeAliasedNetworks)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	// anonymize the record paths
+	for i, record := range records.([]mmdbinspect.RecordSet) {
+		record.Database = path.Base(record.Database)
+		records.([]mmdbinspect.RecordSet)[i] = record
 	}
 
 	json, err := mmdbinspect.RecordToString(records)
